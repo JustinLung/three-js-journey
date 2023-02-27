@@ -1,5 +1,4 @@
 import * as THREE from "three";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import * as dat from "lil-gui";
 import { FontLoader } from "three/examples/jsm/loaders/FontLoader.js";
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry.js";
@@ -25,15 +24,11 @@ fontLoader.load("/fonts/helvetiker_regular.typeface.json", (font) => {
     -textGeometry.boundingBox.max.z * 0.5
   );
   const textMaterial = new THREE.MeshNormalMaterial();
-  //   textMaterial.wireframe = true;
   const text = new THREE.Mesh(textGeometry, textMaterial);
   scene.add(text);
 
   console.time("donuts");
   const donutGeometry = new THREE.TorusGeometry(0.3, 0.2, 20, 45);
-  //   const donutMaterial = new THREE.MeshMatcapMaterial({
-  //     matcap: matcapTexture,
-  //   });
   const donutMaterial = new THREE.MeshNormalMaterial();
   for (let i = 0; i < 300; i++) {
     const donut = new THREE.Mesh(donutGeometry, donutMaterial);
@@ -54,11 +49,16 @@ fontLoader.load("/fonts/helvetiker_regular.typeface.json", (font) => {
   }
 });
 
-/**
- * Base
- */
-// Debug
-const gui = new dat.GUI();
+// Cursor
+const cursor = {
+  x: 0,
+  y: 0,
+};
+
+window.addEventListener("mousemove", (e) => {
+  cursor.x = e.clientX / sizes.width - 0.5;
+  cursor.y = -(e.clientY / sizes.height - 0.5);
+});
 
 // Canvas
 const canvas = document.querySelector("canvas.webgl");
@@ -118,14 +118,7 @@ const camera = new THREE.PerspectiveCamera(
   0.1,
   100
 );
-camera.position.x = 1;
-camera.position.y = 1;
-camera.position.z = 2;
 scene.add(camera);
-
-// Controls
-const controls = new OrbitControls(camera, canvas);
-controls.enableDamping = true;
 
 /**
  * Renderer
@@ -145,7 +138,12 @@ const tick = () => {
   const elapsedTime = clock.getElapsedTime();
 
   // Update controls
-  controls.update();
+  // controls.update();
+
+  camera.position.x = Math.sin(cursor.x * Math.PI * 2) * 3;
+  camera.position.z = Math.cos(cursor.x * Math.PI * 2) * 3;
+  camera.position.y = cursor.y * 5;
+  camera.lookAt(new THREE.Vector3());
 
   // Render
   renderer.render(scene, camera);
