@@ -24,7 +24,6 @@ fontLoader.load("/fonts/helvetiker_regular.typeface.json", (font) => {
     -textGeometry.boundingBox.max.y * 0.5,
     -textGeometry.boundingBox.max.z * 0.5
   );
-  //   const textMaterial = new THREE.MeshMatcapMaterial({ matcap: matcapTexture });
   const textMaterial = new THREE.MeshNormalMaterial();
   //   textMaterial.wireframe = true;
   const text = new THREE.Mesh(textGeometry, textMaterial);
